@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     zIndex: 1000,
     elevation: 1000,
+    backgroundColor: colors.white,
   },
   day: {
     width: 40,

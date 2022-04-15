@@ -22,7 +22,7 @@ const AppTextInput = React.forwardRef(
           <MaterialCommunityIcons
             name={icon}
             size={24}
-            color={defaultStyles.colors.medium}
+            color={defaultStyles.colors.dark}
             style={styles.icon}
           />
         )}

@@ -13,6 +13,7 @@ export default TransactionAllocatorRow = ({
   onSelectItem,
   onOpenAddCategory,
   onOpenAddRule,
+  updaterRoleOnly = false,
 }) => {
   const handleSelectItem = (item) => {
     console.info("item...", item);
@@ -42,18 +43,29 @@ export default TransactionAllocatorRow = ({
         numberOfColumns={4}
       />
       <View style={styles.buttons}>
-        <Button
-          title="Add Category"
-          fontSize={11}
-          color="secondary"
-          onPress={() => onOpenAddCategory(transaction)}
-        />
-        <Button
-          title="Add Rule"
-          fontSize={11}
-          color="greenDark"
-          onPress={() => onOpenAddRule(transaction)}
-        />
+        {updaterRoleOnly ? (
+          <Button
+            title="Update"
+            fontSize={11}
+            color="secondary"
+            onPress={() => handleUpdate(transaction)}
+          />
+        ) : (
+          <>
+            <Button
+              title="Add Category"
+              fontSize={11}
+              color="secondary"
+              onPress={() => onOpenAddCategory(transaction)}
+            />
+            <Button
+              title="Add Rule"
+              fontSize={11}
+              color="greenDark"
+              onPress={() => onOpenAddRule(transaction)}
+            />
+          </>
+        )}
       </View>
     </View>
   );
@@ -62,6 +74,7 @@ export default TransactionAllocatorRow = ({
 const styles = StyleSheet.create({
   buttons: {
     flexDirection: "column",
+    padding: 10,
   },
   evenContainer: {
     flexDirection: "row",

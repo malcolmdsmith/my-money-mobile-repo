@@ -25,33 +25,43 @@ function AppPicker({
   placeholder,
   selectedItem,
   onClearItem,
-  width = "100%",
   onAddEntry,
+  width = "100%",
+  showPlaceholderAbove = false,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const getPlaceholder = () => {
+    if (!showPlaceholderAbove)
+      return <Text style={styles.placeholder}>placeholder</Text>;
+    return null;
+  };
 
   return (
     <>
       <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-        <View style={[styles.container, { width }]}>
-          {icon && (
+        <View style={[styles.outerContainer, { width }]}>
+          {showPlaceholderAbove && <Text>{placeholder}</Text>}
+          <View style={[styles.container, { width }]}>
+            {icon && (
+              <MaterialCommunityIcons
+                name={icon}
+                size={20}
+                color={defaultStyles.colors.dark}
+                style={styles.icon}
+              />
+            )}
+            {selectedItem ? (
+              <Text style={styles.text}>{selectedItem}</Text>
+            ) : (
+              getPlaceholder()
+            )}
             <MaterialCommunityIcons
-              name={icon}
+              name="chevron-right"
+              color={colors.border}
               size={20}
-              color={defaultStyles.colors.medium}
-              style={styles.icon}
             />
-          )}
-          {selectedItem ? (
-            <Text style={styles.text}>{selectedItem}</Text>
-          ) : (
-            <Text style={styles.placeholder}>{placeholder}</Text>
-          )}
-          <MaterialCommunityIcons
-            name="chevron-right"
-            color={colors.border}
-            size={20}
-          />
+          </View>
         </View>
       </TouchableWithoutFeedback>
       {/* <MaterialCommunityIcons
@@ -105,7 +115,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     flexDirection: "row",
-    //flex: 1,
+    justifyContent: "space-between",
     borderRadius: 20,
     padding: 12,
     marginVertical: 0,
@@ -117,6 +127,9 @@ const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
     height: "100%",
+  },
+  outerContainer: {
+    flexDirection: "column",
   },
   placeholder: {
     color: defaultStyles.colors.medium,

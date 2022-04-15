@@ -12,8 +12,9 @@ function AppFormPicker({
   placeholder,
   width,
   icon,
-  submitOnSelect = false,
   onAddEntry,
+  submitOnSelect = false,
+  showPlaceholderAbove = false,
 }) {
   const { errors, setFieldValue, touched, values, handleSubmit } =
     useFormikContext();
@@ -39,6 +40,7 @@ function AppFormPicker({
         width={width}
         icon={icon}
         onAddEntry={onAddEntry}
+        showPlaceholderAbove={showPlaceholderAbove}
       />
       <ErrorMessage error={errors[name]} visible={touched[name]} />
     </>

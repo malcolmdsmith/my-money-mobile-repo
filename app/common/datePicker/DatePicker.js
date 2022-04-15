@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import PickerMonth from "./PickerMonth";
@@ -46,17 +46,17 @@ export default DatePicker = ({ title, selectedDay, onDaySelected }) => {
           <Text>{title}</Text>
           <Text style={styles.text}>{pickedDate}</Text>
         </TouchableOpacity>
+        {showPicker && (
+          <View style={styles.container}>
+            <PickerMonth
+              selectedDay={pickedDate}
+              currentMonth={currentMonth}
+              onMonthChange={handleMonthChange}
+              onDaySelected={handleDaySelected}
+            />
+          </View>
+        )}
       </View>
-      {showPicker && (
-        <View style={styles.container}>
-          <PickerMonth
-            selectedDay={pickedDate}
-            currentMonth={currentMonth}
-            onMonthChange={handleMonthChange}
-            onDaySelected={handleDaySelected}
-          />
-        </View>
-      )}
     </>
   );
 };
@@ -64,11 +64,11 @@ export default DatePicker = ({ title, selectedDay, onDaySelected }) => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    top: 48,
-    left: -100,
+    top: -2,
+    left: 0,
     zIndex: 1000,
     elevation: 1000,
-    backgroundColor: "red",
+    //backgroundColor: "red",
   },
   text: {
     borderColor: colors.border,

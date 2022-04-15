@@ -40,17 +40,9 @@ export default SearchTransactionsScreen = ({ navigation }) => {
     await loadScreen();
   };
 
-  const handleSearch = async (dateFrom, dateTo) => {
-    const data = {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      amountFrom: 0,
-      amountTo: 0,
-      keywords: "",
-      category: "",
-    };
-    //console.info(data);
-    const result = await searchTransactions(1, 100000, data, false);
+  const handleSearch = async (searchParameters) => {
+    console.info(searchParameters);
+    const result = await searchTransactions(1, 100000, searchParameters, false);
     //console.info(transactions);
     setTransactions(result.transactions);
   };
@@ -61,10 +53,10 @@ export default SearchTransactionsScreen = ({ navigation }) => {
     <>
       <Screen navigation={navigation}>
         <Heading title="Search Transactions" />
-        <SearchForm onSearch={handleSearch} />
-        <View style={styles.list}>
-          <TransactionAllocatorRowHeader />
-          <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
+          <SearchForm onSearch={handleSearch} />
+          <View style={styles.list}>
+            <TransactionAllocatorRowHeader />
             {transactions.map((transaction, index) => (
               <TransactionAllocatorRow
                 key={index}
@@ -72,12 +64,13 @@ export default SearchTransactionsScreen = ({ navigation }) => {
                 rowIndex={index}
                 categories={types}
                 onSelectItem={handleSelectItem}
+                updaterRoleOnly={true}
                 //onOpenAddCategory={handleOpenAddCategory}
                 //onOpenAddRule={handleOpenAddRule}
               />
             ))}
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
       </Screen>
     </>
   );

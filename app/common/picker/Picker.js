@@ -1,5 +1,7 @@
 import React, { Component, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+
 import colors from "../../config/colors";
 
 export default Picker = ({
@@ -22,7 +24,14 @@ export default Picker = ({
     <View style={styles.container} width={width}>
       <Text>{title}</Text>
       <TouchableOpacity onPress={() => setShowList(!showList)}>
-        <Text style={styles.text}>{selectedItem}</Text>
+        <View style={styles.text} width={width}>
+          <Text style={styles.textx}>{selectedItem}</Text>
+          {showList ? (
+            <MaterialCommunityIcons name="chevron-up" size={20} />
+          ) : (
+            <MaterialCommunityIcons name="chevron-down" size={20} />
+          )}
+        </View>
       </TouchableOpacity>
       {showList && (
         <View
@@ -40,10 +49,13 @@ export default Picker = ({
 };
 
 const styles = StyleSheet.create({
+  box: {
+    flexDirection: "row",
+  },
   container: {},
   listContainer: {
     position: "absolute",
-    top: 60,
+    top: 52,
     marginLeft: 10,
     backgroundColor: colors.list,
   },
@@ -52,6 +64,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   text: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     backgroundColor: colors.white,
     height: 34,
     borderRadius: 5,

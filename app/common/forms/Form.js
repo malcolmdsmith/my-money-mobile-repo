@@ -16,6 +16,7 @@ function AppForm({
   clearButtonTitle,
   clearButtonIcon,
   showSaveButton = false,
+  saveButtonTitle = "Save",
   showCloseButton = false,
   onClose,
 }) {
@@ -32,7 +33,7 @@ function AppForm({
           <View style={styles.buttons}>
             {showSaveButton && (
               <SubmitButton
-                title="Save"
+                title={saveButtonTitle}
                 icon="smile"
                 color="secondary"
                 width={140}

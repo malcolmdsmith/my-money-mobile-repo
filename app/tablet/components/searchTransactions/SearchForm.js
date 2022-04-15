@@ -8,7 +8,7 @@ import storage from "../../../utility/localStorage";
 import DatePicker from "../../../common/datePicker/DatePicker";
 import { getToday } from "../../../utility/dateFunctions";
 import colors from "../../../config/colors";
-import { incrementPeriod } from "../../../utility/dateFunctions";
+import { incrementPeriod, incrementDate } from "../../../utility/dateFunctions";
 import { getBudgetTypes } from "../../../api/budgetTypesApi";
 import { getCurrentUser } from "../../../api/userApi";
 import {
@@ -17,6 +17,7 @@ import {
   FormPicker,
   SubmitButton,
 } from "../../../common/forms";
+import Picker from "../../../common/picker/Picker";
 
 const validationSchema = Yup.object().shape({
   dateFrom: Yup.string().label("Date From"),
@@ -31,6 +32,16 @@ export default SearchForm = ({ onSearch }) => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [budgetTypes, setBudgetTypes] = useState([]);
+  const [selectedPeriod, setSelectedPeriod] = useState("Today");
+  const [periods] = useState([
+    "Today",
+    "This Week",
+    "This Fortnight",
+    "This Month",
+    "This Quarter",
+    "This Financial Year",
+    "This Calendar Year",
+  ]);
 
   useEffect(() => {
     (async () => await initializeForm())();
@@ -41,18 +52,18 @@ export default SearchForm = ({ onSearch }) => {
     const types = await getBudgetTypes(user.id);
     // console.info(types);
     setBudgetTypes(types.map((t) => t.category));
-    let startDate = await storage.get("@search-dateTo");
+    let startDate = null; //await storage.get("@search-dateTo");
     console.info("Startdate...", startDate);
     if (startDate === null) {
       const periods = getToday();
-      const range = incrementPeriod(
-        periods.dateFrom,
-        periods.dateFrom,
-        -1,
-        0,
-        7
-      );
-      setDateFrom(range.dateFrom);
+      // const range = incrementPeriod(
+      //   periods.dateFrom,
+      //   periods.dateFrom,
+      //   -1,
+      //   0,
+      //   7
+      // );
+      setDateFrom(periods.dateFrom);
       setDateTo(periods.dateTo);
       //      console.info(periods.dateFrom);
       return;
@@ -71,25 +82,64 @@ export default SearchForm = ({ onSearch }) => {
     setDateFrom(item.date);
   };
 
-  const handleSearch = async (data) => {
-    onSearch(dateFrom, dateTo);
+  const handleIncrease = () => {
+    handleIncrement(1, selectedPeriod);
   };
+
+  const handleDecrease = () => {
+    handleIncrement(-1, selectedPeriod);
+  };
+
+  const handleIncrement = (value, periodType) => {
+    const dateRange = incrementDate(periodType, dateFrom, dateTo, value);
+    updateDateRangeState(dateRange);
+  };
+
+  const updateDateRangeState = (dateRange) => {
+    console.info(dateRange.dateFrom);
+    setDateFrom(dateRange.dateFrom);
+    setDateTo(dateRange.dateTo);
+  };
+
+  const handleSearch = async (data) => {
+    //console.info(data);
+    const searchParameters = {
+      dateFrom,
+      dateTo,
+      amountFrom: data.amountFrom,
+      amountTo: data.amountTo,
+      category: data.category,
+      keywords: data.keywords,
+    };
+    onSearch(searchParameters);
+  };
+
+  const handleSelectedPeriod = (data) => {
+    console.info("periodType...", data);
+    setSelectedPeriod(data);
+    handleIncrement(0, data);
+  };
+
+  const handleReset = () => {};
 
   return (
     <DropShadow style={styles.shadowProp}>
       <View style={styles.container}>
         <Form
           initialValues={{
-            dateFrom: "",
-            dateTo: "",
+            // dateFrom: "",
+            // dateTo: "",
             category: "",
             amountFrom: 0,
             amountTo: 0,
             keywords: "",
           }}
           onSubmit={handleSearch}
+          onHandleReset={handleReset}
           validationSchema={validationSchema}
           showClearButton={true}
+          showSaveButton={true}
+          saveButtonTitle="Search"
           clearButtonIcon="trash-alt"
           clearButtonTitle="Clear"
         >
@@ -104,8 +154,27 @@ export default SearchForm = ({ onSearch }) => {
               selectedDay={dateTo}
               onDaySelected={handleDateToSelected}
             />
-            <Button icon="backward" color="heading" width={100} />
-            <Button icon="forward" color="heading" width={100} />
+            <Button
+              icon="backward"
+              color="heading"
+              width={100}
+              onPress={handleDecrease}
+            />
+            <Button
+              icon="forward"
+              color="heading"
+              width={100}
+              onPress={handleIncrease}
+            />
+            <Picker
+              items={periods}
+              title="Set date range to"
+              onSelectItem={handleSelectedPeriod}
+              selectedItem={selectedPeriod}
+              listWidth={200}
+              width={200}
+              height={220}
+            />
           </View>
 
           <View style={styles.categoryContainer}>
@@ -115,6 +184,7 @@ export default SearchForm = ({ onSearch }) => {
               name="category"
               placeholder="Category"
               numberOfColumns={4}
+              showPlaceholderAbove={true}
             />
           </View>
           <View style={styles.amountsContainer}>
@@ -146,10 +216,10 @@ export default SearchForm = ({ onSearch }) => {
             />
           </View>
           {/* <View style={{ height: 25 }}></View> */}
+          {/* <View style={styles.searchButton}>
+            <Button title="Search" width={120} />
+          </View> */}
         </Form>
-        <View style={styles.searchButton}>
-          <Button title="Search" width={120} onPress={handleSearch} />
-        </View>
       </View>
     </DropShadow>
   );
@@ -161,7 +231,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 20,
     flexDirection: "column",
-    width: 630,
+    width: 750,
     justifyContent: "flex-start",
     alignItems: "flex-start",
     zIndex: -1000,
@@ -189,7 +259,7 @@ const styles = StyleSheet.create({
   },
   dateRangeContainer: {
     flexDirection: "row",
-    width: 500,
+    width: 700,
     justifyContent: "space-evenly",
   },
   shadowProp: {
