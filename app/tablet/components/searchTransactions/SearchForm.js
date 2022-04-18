@@ -79,7 +79,7 @@ export default SearchForm = ({ onSearch }) => {
   };
   const handleDateToSelected = (item) => {
     console.info(item);
-    setDateFrom(item.date);
+    setDateTo(item.date);
   };
 
   const handleIncrease = () => {
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: "row",
     width: 300,
-    marginTop: 45,
+    marginTop: 25,
     zIndex: -1000,
     elevation: -1000,
   },

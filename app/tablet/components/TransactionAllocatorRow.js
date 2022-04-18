@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, Alert } from "react-native";
 
 import Picker from "../../common/Picker";
 import { formatDate } from "../../utility/dateFunctions";
@@ -13,6 +13,7 @@ export default TransactionAllocatorRow = ({
   onSelectItem,
   onOpenAddCategory,
   onOpenAddRule,
+  onUpdate,
   updaterRoleOnly = false,
 }) => {
   const handleSelectItem = (item) => {
@@ -44,12 +45,20 @@ export default TransactionAllocatorRow = ({
       />
       <View style={styles.buttons}>
         {updaterRoleOnly ? (
-          <Button
-            title="Update"
-            fontSize={11}
-            color="secondary"
-            onPress={() => handleUpdate(transaction)}
-          />
+          <>
+            <Button
+              title="Add Category"
+              fontSize={11}
+              color="secondary"
+              onPress={() => onOpenAddCategory(transaction)}
+            />
+            <Button
+              title="Update"
+              fontSize={11}
+              color="secondary"
+              onPress={() => onUpdate(transaction)}
+            />
+          </>
         ) : (
           <>
             <Button
@@ -74,7 +83,7 @@ export default TransactionAllocatorRow = ({
 const styles = StyleSheet.create({
   buttons: {
     flexDirection: "column",
-    padding: 10,
+    padding: 5,
   },
   evenContainer: {
     flexDirection: "row",
